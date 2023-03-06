@@ -11,7 +11,7 @@ result_array=($detail_info)
 #echo ${result_array[*]}
 
 p=${result_array[3]}
-v=`echo ${result_array[9]}/10000 | bc`
+v=`echo ${result_array[9]} | sed 's/.\{4\}\..*$/wRMB/' `
 
 #echo ${p}_${v}
 
