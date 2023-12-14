@@ -12,7 +12,7 @@ mv refresh ~/.refresh
 
 echo "alias r='clear && source ~/.refresh'" >> ~/.bashrc
 
-Open a new shell session and type the follow command in bash
+Open a new shell session and execute the following command in bash
 
 r
 
