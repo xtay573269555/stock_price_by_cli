@@ -1,18 +1,37 @@
 #!/bin/bash
 set -e
 
-result_curl="`curl -s --referer https://finance.sina.com.cn --user-agent 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36' https://hq.sinajs.cn/list=sh510050 | iconv -f gbk -t utf8`"
-#echo ${result_curl}
+function get_price_qq(){
+  result_curl="`curl -s --referer https://qt.gtimg.cn --user-agent 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36' https://qt.gtimg.cn/q=sh510050 | iconv -f gbk -t utf8`"
+  #echo ${result_curl}
+  detail_info=`echo ${result_curl} | awk -F'"' '{print $2}'`
+  IFS="~"
+  result_array=($detail_info)
+  #echo ${result_array[*]}
 
-detail_info=${result_curl#*\"}
-detail_info=${detail_info%\"*}
-IFS=","
-result_array=($detail_info)
-#echo ${result_array[*]}
+  p=${result_array[3]}
+  v=`echo ${result_array[37]}`
 
-p=${result_array[3]}
-v=`echo ${result_array[9]} | sed 's/.\{4\}\..*$/wRMB/' `
+  #echo ${p}_${v}
 
-#echo ${p}_${v}
+  export PS1="[\u@${p}_${v} \W]\\$"
+}
 
-export PS1="[\u@${p}_${v} \W]\\$"
+function get_price_sina(){
+  result_curl="`curl -s --referer https://finance.sina.com.cn --user-agent 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36' https://hq.sinajs.cn/list=sh510050 | iconv -f gbk -t utf8`"
+  #echo ${result_curl}
+  detail_info=`echo ${result_curl} | awk -F'"' '{print $2}'`
+  IFS=","
+  result_array=($detail_info)
+  #echo ${result_array[*]}
+
+  p=${result_array[3]}
+  v=`echo ${result_array[9]}/10000 | bc`
+
+  #echo ${p}_${v}
+
+  export PS1="[\u@${p}_${v} \W]\\$"
+}
+
+#get_price_sina
+get_price_qq
